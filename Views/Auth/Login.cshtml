@@ -1,0 +1,104 @@
+@model FamilyTaskManagement.Web.Models.LoginDto
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Family Task Management</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="container-fluid vh-100">
+        <div class="row h-100">
+            <!-- Left side - Branding -->
+            <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center bg-primary text-white">
+                <div class="text-center">
+                    <i class="fas fa-tasks display-1 mb-4"></i>
+                    <h1 class="display-4 fw-bold mb-3">Family Task Management</h1>
+                    <p class="lead">Organize your family's tasks and stay productive together</p>
+                    <div class="mt-5">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <p class="small">Family Collaboration</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                                <p class="small">Task Scheduling</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-chart-line fa-2x mb-2"></i>
+                                <p class="small">Progress Tracking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right side - Login Form -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                <div class="login-form-container">
+                    <div class="text-center mb-5">
+                        <div class="d-lg-none mb-4">
+                            <i class="fas fa-tasks fa-3x text-primary"></i>
+                        </div>
+                        <h2 class="fw-bold">Welcome Back</h2>
+                        <p class="text-muted">Please sign in to your account</p>
+                    </div>
+                    
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    
+                    <form method="post" asp-action="Login">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label fw-medium">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input asp-for="Username" class="form-control form-control-lg" placeholder="Enter your username" />
+                            </div>
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-medium">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="Password" class="form-control form-control-lg" placeholder="Enter your password" />
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">
+                          <small class="text-muted">Demo credentials: admin/Admin123! or father/Father123!</small>                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+

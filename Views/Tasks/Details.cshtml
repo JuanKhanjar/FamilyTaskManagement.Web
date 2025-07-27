@@ -1,0 +1,149 @@
+@model TaskDto
+
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">Task Details</h3>
+                    <div>
+                        @if (Model.Status.ToLower() != "completed")
+                        {
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                    Update Status
+                                </button>
+                                <ul class="dropdown-menu">
+                                    @if (Model.Status.ToLower() != "pending")
+                                    {
+                                        <li><a class="dropdown-item" href="#" onclick="updateStatus(@Model.Id, 'Pending')">Pending</a></li>
+                                    }
+                                    @if (Model.Status.ToLower() != "in progress")
+                                    {
+                                        <li><a class="dropdown-item" href="#" onclick="updateStatus(@Model.Id, 'In Progress')">In Progress</a></li>
+                                    }
+                                    @if (Model.Status.ToLower() != "completed")
+                                    {
+                                        <li><a class="dropdown-item" href="#" onclick="updateStatus(@Model.Id, 'Completed')">Completed</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        <a asp-action="Assign" asp-route-taskId="@Model.Id" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus"></i> Assign
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>@Model.Title</h4>
+                            <p class="text-muted">@Model.Description</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <strong>Category:</strong>
+                                    <span class="badge bg-info">@Model.Category</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Priority:</strong>
+                                    @{
+                                        var priorityClass = Model.Priority.ToLower() switch
+                                        {
+                                            "critical" => "bg-danger",
+                                            "high" => "bg-warning",
+                                            "medium" => "bg-primary",
+                                            "low" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @priorityClass">@Model.Priority</span>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <strong>Status:</strong>
+                                    @{
+                                        var statusClass = Model.Status.ToLower() switch
+                                        {
+                                            "completed" => "bg-success",
+                                            "in progress" => "bg-warning",
+                                            "pending" => "bg-secondary",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@Model.Status</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Estimated Hours:</strong>
+                                    <span>@(Model.EstimatedHours?.ToString("F1") ?? "Not specified")</span>
+                                </div>
+                            </div>
+
+                            @if (Model.DueDate.HasValue)
+                            {
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <strong>Due Date:</strong>
+                                        <span class="@(Model.DueDate.Value < DateTime.Now && Model.Status.ToLower() != "completed" ? "text-danger" : "")">
+                                            @Model.DueDate.Value.ToString("MMM dd, yyyy HH:mm")
+                                        </span>
+                                        @if (Model.DueDate.Value < DateTime.Now && Model.Status.ToLower() != "completed")
+                                        {
+                                            <span class="badge bg-danger ms-2">Overdue</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Task Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Created:</strong><br>@Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</p>
+                                    <p><strong>Last Updated:</strong><br>@Model.UpdatedAt.ToString("MMM dd, yyyy HH:mm")</p>
+                                    @if (Model.CompletedAt.HasValue)
+                                    {
+                                        <p><strong>Completed:</strong><br>@Model.CompletedAt.Value.ToString("MMM dd, yyyy HH:mm")</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Tasks
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Update Form (Hidden) -->
+<form id="statusUpdateForm" asp-action="UpdateStatus" method="post" style="display: none;">
+    <input type="hidden" name="id" id="taskId" />
+    <input type="hidden" name="status" id="taskStatus" />
+</form>
+
+@section Scripts {
+    <script>
+        function updateStatus(taskId, status) {
+            if (confirm('Are you sure you want to update the task status to "' + status + '"?')) {
+                document.getElementById('taskId').value = taskId;
+                document.getElementById('taskStatus').value = status;
+                document.getElementById('statusUpdateForm').submit();
+            }
+        }
+    </script>
+}
+

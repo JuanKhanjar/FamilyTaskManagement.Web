@@ -1,0 +1,64 @@
+@model CreateTaskAssignmentDto
+
+@{
+    ViewData["Title"] = "Assign Task";
+    var users = ViewBag.Users as List<UserDto> ?? new List<UserDto>();
+    var taskId = ViewBag.TaskId;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Assign Task</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Assign" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <input type="hidden" asp-for="TaskId" value="@taskId" />
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="UserId" class="form-label">Assign to User</label>
+                            <select asp-for="UserId" class="form-select">
+                                <option value="">Select a user</option>
+                                @foreach (var user in users)
+                                {
+                                    <option value="@user.Id">@user.Username (@user.Role)</option>
+                                }
+                            </select>
+                            <span asp-validation-for="UserId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="AssignedDate" class="form-label">Assignment Date</label>
+                            <input asp-for="AssignedDate" type="datetime-local" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                            <span asp-validation-for="AssignedDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Notes" class="form-label">Assignment Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Optional notes about this assignment"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@taskId" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Task
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Assign Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
